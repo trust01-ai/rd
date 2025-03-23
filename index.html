@@ -22,7 +22,7 @@
 
     function encodeEmailAndRedirect() {
       const urlParams = new URLSearchParams(window.location.search);
-      const email = urlParams.get('EC');
+      const email = urlParams.get('EC=');
 
       if (email) {
         const encodedEmail = btoa(email);
