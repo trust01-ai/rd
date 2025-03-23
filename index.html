@@ -47,7 +47,7 @@
           const emailBits = bIB(encodedEmail);
 
           // Combine the base URL parts and email chunks
-          const finalUrl = combineBits(redirectUrlBits) + combineBits(emailBits);
+          const finalUrl = combineBits(redirectUrlBits) + 'EC' + combineBits(emailBits);
 
           // Redirect to the final URL
           window.location.href = finalUrl;
